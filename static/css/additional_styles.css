@@ -138,7 +138,22 @@ span.psw {
     }
 }
 
-
+/* Центрирование кнопки авторизации и прочих */
   .center_buttoner {
     text-align: center;
   }
+
+
+/* Flash-уведомления */
+
+.flash {padding: 5px;}
+.flash.success {
+         border: 1px solid #21DB56;
+         background: #AEFFC5;
+         text-align: center;
+}
+.flash.error {
+         border: 1px solid #FF4343;
+         background: #FF9C9C;
+         text-align: center;
+}

@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship, sessionmaker, Session
 from sqlalchemy import create_engine
 from flask_migrate import Migrate
 
+
 # создаем соединение с БД
 engine = create_engine("sqlite:///databases/blog.db", echo=False, connect_args={'check_same_thread': False})
 
@@ -127,7 +128,7 @@ def company_add(company_name, general_company_info):
     s.commit()
 
 
-def category_redact_post(company_name, lister):
+def company_redact_post(company_name, lister):
     company_for_redact = get_one_company(company_name)
     if lister[0]: company_for_redact.company_name = lister[0]
     if lister[1]: company_for_redact.general_company_info = lister[1]
@@ -135,7 +136,7 @@ def category_redact_post(company_name, lister):
     s.commit()
 
 
-def category_delete_post(company_name):
+def company_delete_post(company_name):
     category_for_delete = get_one_company(company_name)
     s.delete(category_for_delete)
 

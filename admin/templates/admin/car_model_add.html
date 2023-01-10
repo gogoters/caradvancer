@@ -6,10 +6,6 @@
 
 <form action='' method="post">
 
-    {% for msg in get_flashed_messages() %}
-    <div class="flash">{{msg}}</div>
-    {% endfor %}
-
     <div class="container">
         <label for="user"><b>Название модели</b></label>
         <input type="text" placeholder="Название автомобиля" name="model_name" required>

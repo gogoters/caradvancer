@@ -2,8 +2,9 @@ import sqlite3
 from flask import Blueprint, render_template, url_for, redirect, session, request, flash, get_flashed_messages, g, abort
 from databases.caDB import CarModel, CarCompany, CarActual, s, get_all_posts, get_one_car, car_add_post, \
     car_redact_post, \
-    car_delete_post, get_one_company, company_add, category_redact_post, category_delete_post, get_all_car_names, \
+    car_delete_post, get_one_company, company_add, company_redact_post, company_delete_post, get_all_car_names, \
     get_one_actual_car, actual_redact_post, actual_car_delete_post, actual_car_add_post, actual_car_status
+from databases.validators.validators import equalazer_register
 
 admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
@@ -34,11 +35,11 @@ def login():
         return redirect(url_for('.index'))
 
     if request.method == "POST":
-        if request.form['user'] == "admin" and request.form['psw'] == "12345":
+        if request.form['user'] == "admin" and equalazer_register(request.form['psw'],"12345"):
             login_admin()
             return redirect(url_for('.index'))
         else:
-            flash("Неверная пара логин/пароль", "error")
+            flash ('Неверная пара логин/пароль', category='error')
 
     return render_template('admin/login.html', title='Админ-панель')
 
@@ -78,8 +79,8 @@ def company_add_post():
 def company_post_correction(car_company):
     query = get_one_company(car_company)
     if request.method == 'POST':
-        res = category_redact_post(car_company,
-                                   lister=[request.form['company_name'], request.form['general_company_info']])
+        res = company_redact_post(car_company,
+                                  lister=[request.form['company_name'], request.form['general_company_info']])
 
     return render_template('admin/company_post_redact.html', company_for_redact=query,
                            title=f'Редактирование {car_company}')
@@ -87,7 +88,7 @@ def company_post_correction(car_company):
 
 @admin.route('/<car_company>/delete', methods=['POST', 'GET'])
 def company_post_delete(car_company):
-    category_delete_post(car_company)
+    company_delete_post(car_company)
 
     return redirect('/posts_list')
 

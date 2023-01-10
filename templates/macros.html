@@ -54,3 +54,8 @@
 </div>
 {%- endmacro %}
 
+
+<!--Ниже представлена кнопка всплывающего уведомления-->
+{% macro flash_info_message(message_for_print, category) -%}
+<div class="flash {{category}}"><strong>{{message_for_print}}</strong></div>
+{%- endmacro %}
