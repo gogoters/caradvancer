@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block top_returner %}
+<!--Слабое место - имеем переопределение блока просто на ровном месте-->
+<a href="{{url_for('index')}}" class="navbar-brand d-flex align-items-center">
+    <strong>.caradvancer</strong>
+</a>
+{% endblock top_returner %}
+
+{% block content %}
+
+<form action='' method="post">
+
+
+    <div class="container">
+        <label for="user"><b>Username</b></label>
+        <input type="text" placeholder="Enter {{user_placeholder}}" name="user" required>
+
+        {% block password %}
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter {{psw_placeholder}}" name="psw" required>
+        {% endblock password %}
+
+        {% block remember %}
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="remember-me"> Запомнить меня
+            </label>
+        </div>
+        {% endblock remember %}
+
+        {% block initiatial_button %}
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+        {% endblock initiatial_button %}
+
+    </div>
+</form>
+
+{% block first_reg %}
+<p class="lead text-muted" align="center">
+    First time? Fill a <a href="register">registration</a> form
+</p>
+{% endblock first_reg %}
+
+
+{% endblock content %}

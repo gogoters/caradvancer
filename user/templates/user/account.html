@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% block account_top %}
+<div class="container px-4 py-5" id="hanging-icons">
+    <h2 class="pb-2 border-bottom">Private. {{nickname}}</h2>
+{% endblock account_top %}
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        {% for tool in tools %}
+        <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                <svg class="bi" width="1em" height="1em">
+                    <use xlink:href="#toggles2"></use>
+                </svg>
+            </div>
+            <div>
+                <h2>{{tool.title}}</h2>
+                <p>{{tool.description}}</p>
+                <a href="{{tool.url}}" class="btn btn-primary">
+                    {{tool.button_text}}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

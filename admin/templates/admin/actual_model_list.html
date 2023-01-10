@@ -1,0 +1,36 @@
+{% extends 'actual_model_list.html' %}
+
+{% block call %}
+<a href="{{url_for('admin.actual_car_post_add')}}" class="btn btn-primary my-2">Add one more car here</a>
+<!--<a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
+{% endblock call %}
+
+
+{% block buttons_available scoped %}
+<button onclick="window.location.href ='{{car.mother_model_name}}/{{car.serial_number}}'" type="button"
+        class="btn btn-sm btn-outline-secondary">View
+</button>
+<button onclick="window.location.href ='{{car.mother_model_name}}/{{car.serial_number}}/correction'" type="button"
+        class="btn btn-sm btn-outline-secondary">Edit
+</button>
+<button onclick="window.location.href ='{{car.mother_model_name}}/{{car.serial_number}}/delete'" type="button"
+        class="btn btn-sm btn-outline-secondary">Delete
+</button>
+
+<!--Кнопка для переключения статуса через админ-панель-->
+<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
+        data-bs-toggle="dropdown" aria-expanded="false">{{car.actual_status}}
+</button>
+<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    {% for item in actual_car_status %}
+    <li><a class="dropdown-item" href="#">{{item}}</a></li>
+    {% endfor %}
+</ul>
+
+<small class="text-muted">
+    {% for user in car.list_rented %}
+    <small class="text-muted"> Rented by {{user.nickname}} </small>
+    {% endfor %}
+</small>
+
+{% endblock buttons_available  %}

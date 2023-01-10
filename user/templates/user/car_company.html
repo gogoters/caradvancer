@@ -1,0 +1,6 @@
+{% extends 'car_company.html' %}
+
+{% block buttons_available scoped %}
+<button onclick="window.location.href ='{{car.model_name}}'" type="button" class="btn btn-sm btn-outline-secondary">View</button>
+{% endblock buttons_available %}
+

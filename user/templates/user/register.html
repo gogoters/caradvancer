@@ -1,0 +1,15 @@
+{% extends 'user/login.html' %}
+
+{% block password %}
+{{ super() }}
+<label for="psw_again"><b>Password once again</b></label>
+<input type="password" placeholder="Enter {{psw_agian_placeholder}}" name="psw_again" required>
+{% endblock password %}
+
+
+{% block remember %}
+{% endblock remember %}
+
+{% block first_reg %}
+{% endblock first_reg %}
+

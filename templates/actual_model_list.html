@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+<!--Страница дает доступные для аренды автомобили по выбранной модели-->
+
+{% block content %}
+<main>
+
+    {% block general %}
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Time to rent!</h1>
+                <p class="lead text-muted">Take a look at {{car_model.model_name}} models. We provide the optimal
+                    amount of cars all around the Berlin city.</p>
+                <p>
+                    {% block call %}
+                    <!--                    <a href="#" class="btn btn-primary my-2">Main call to action</a>-->
+                    <!--                    <a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
+                    {% endblock call %}
+                </p>
+            </div>
+        </div>
+    </section>
+    {% endblock general %}
+
+    {% block cars_representation %}
+    <div class="album py-5 bg-light">
+        <div class="container">
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+                {% block one_car_representation %}
+                <!--        Указываем модельный ряд компании-->
+                {%for car in car_model.list_actual%}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
+                             xmlns="http://www.w3.org/2000/svg" role="img"
+                             aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                            <title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#55595c"/>
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{car.model_name}} {{car.serial_number}}
+                            </text>
+                        </svg>
+                        <div class="card-body">
+                            <p class="card-text">{{car}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    {% block buttons_available scoped %}
+                                    <button onclick="window.location.href = '/{{car_company.company_name}}/{{car.mother_model_name}}/{{car.serial_number}}'"
+                                            type="button" class="btn btn-sm btn-outline-secondary">View
+                                    </button>
+                                    <!--                                    Кнопка статсуа автомобиля-->
+<!--                                    <button onclick="window.location.href = '#'"-->
+<!--                                            type="button" class="btn btn-sm btn-outline-secondary">{{car.actual_status}}-->
+<!--                                    </button>-->
+                                    {% endblock buttons_available %}
+                                </div>
+                                <small class="text-muted"> {{car.price}}€/hour </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endblock one_car_representation %}
+
+
+            </div>
+        </div>
+    </div>
+    {% endblock cars_representation %}
+
+</main>
+{% endblock content %}
+

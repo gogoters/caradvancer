@@ -1,0 +1,56 @@
+<!--Ниже представлена кнопка для подтверждения того или иного действия-->
+
+{% macro centered_modal_button(accept='Apply changes', cancel='Cancel') -%}
+<div>
+    <div class="center_buttoner">
+        <button type="button" align='' class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#changer_applier">
+            Save changes
+        </button>
+    </div>
+    <div class="modal fade" id="changer_applier" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{cancel}}</button>
+                    <button type="submit" class="btn btn-primary">{{accept}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%- endmacro %}
+
+
+<!--Ниже представлена кнопка для подтверждения выхода из аккаунта-->
+{% macro centered_modal_button_logout() -%}
+<button type="button" align=''
+        class="btn btn-secondary my-2" data-bs-toggle="modal"
+        data-bs-target="#logout" class="center_buttoner">
+    Log out
+</button>
+<div class="modal fade" id="logout" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button onclick="window.location.href = '{{url_for('.logout')}}'" type="submit"
+                        class="btn btn-primary">Log out
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{%- endmacro %}
+

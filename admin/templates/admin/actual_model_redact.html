@@ -1,0 +1,40 @@
+{% import 'macros.html' as macros %}
+{% extends 'base.html' %}
+
+{% block content %}
+
+{{car_for_redact}}
+
+<form action='' method="post">
+
+    <div class="container">
+        <label for="model_name"><b>Название модели</b></label>
+        <input type="text" placeholder="{{car_for_redact.model_name}}" name="model_name">
+
+        <label for="mother_model_name"><b>Название материнской модели</b></label>
+        <input type="text" placeholder="{{car_for_redact.mother_model_name}}" name="mother_model_name">
+
+        <label for="serial_number"><b>Серийный номер</b></label>
+        <input type="text" placeholder="{{car_for_redact.serial_number}}" name="serial_number">
+
+        <label for="price "><b>Цена</b></label>
+        <input type="text" placeholder="{{car_for_redact.price}}" name="price">
+
+        <label for="year_made"><b>Год выпуска</b></label>
+        <input type="text" placeholder="{{car_for_redact.year_made}}" name="year_made">
+
+        <label for="engine_volume"><b>Объем двигателя</b></label>
+        <input type="text" placeholder="{{car_for_redact.engine_volume}}" name="engine_volume">
+
+        <label for="engine_horsepower"><b>Количество л.с.</b></label>
+        <input type="text" placeholder="{{car_for_redact.engine_horsepower}}" name="engine_horsepower">
+
+        <label for="travel_reach"><b>Запас хода</b></label>
+        <input type="text" placeholder="{{car_for_redact.travel_reach}}" name="travel_reach">
+
+        {{macros.centered_modal_button()}}
+    </div>
+</form>
+
+{% endblock content %}
+

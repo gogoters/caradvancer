@@ -1,0 +1,50 @@
+{% import 'macros.html' as macros %}
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<form action='' method="post">
+
+    {% for msg in get_flashed_messages() %}
+    <div class="flash">{{msg}}</div>
+    {% endfor %}
+
+    <div class="container">
+        <label for="user"><b>Название модели</b></label>
+        <input type="text" placeholder="Название автомобиля" name="model_name" required>
+
+        <label for="model_name"><b>Название автоконцерна</b></label>
+        <!--        <select>-->
+        <!--	    {% for company in companies%}-->
+        <!--            <option>-->
+        <!--            {{company.company_name}}-->
+        <!--            </option>-->
+        <!--            {% endfor %}-->
+        <!--        </select>-->
+        <input type="text" placeholder="Название автоконцерна" name="mother_company_name">
+
+        <label for="general_description"><b>Общее описание</b></label>
+        <input type="text" placeholder="Общее описание" name="general_description">
+
+        <label for="price "><b>Цена</b></label>
+        <input type="text" placeholder="Почасовая ставка" name="price" required>
+
+        <label for="year_made"><b>Год выпуска</b></label>
+        <input type="text" placeholder="Год выпуска" name="year_made" required>
+
+        <label for="engine_volume"><b>Объем двигателя</b></label>
+        <input type="text" placeholder="Объем двигателя" name="engine_volume" required>
+
+        <label for="engine_horsepower"><b>Количество л.с.</b></label>
+        <input type="text" placeholder="Введите количество л.с." name="engine_horsepower" required>
+
+        <label for="travel_reach"><b>Запас хода</b></label>
+        <input type="text" placeholder="Запас хода" name="travel_reach" required>
+
+        {{macros.centered_modal_button()}}
+
+    </div>
+</form>
+
+{% endblock content %}

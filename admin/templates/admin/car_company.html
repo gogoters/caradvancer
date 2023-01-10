@@ -1,0 +1,13 @@
+{% extends 'car_company.html' %}
+
+{% block call %}
+<a href="{{url_for('admin.car_model_add')}}" class="btn btn-primary my-2">Add one more model here</a>
+<!--<a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
+{% endblock call %}
+
+
+{% block buttons_available scoped %}
+<button onclick="window.location.href ='{{car.model_name}}'" type="button" class="btn btn-sm btn-outline-secondary">View</button>
+<button onclick="window.location.href ='{{car.model_name}}/correction'" type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+<button onclick="window.location.href ='{{car.model_name}}/delete'" type="button" class="btn btn-sm btn-outline-secondary">Delete</button>
+{% endblock buttons_available  %}

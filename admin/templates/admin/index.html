@@ -1,0 +1,26 @@
+{% extends 'index.html' %}
+{% import 'macros.html' as macros %}
+
+{% block content %}
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Admin-panel</h1>
+            <p class="lead text-muted">Here you can see an admin-panel. Use it to do some things.</p>
+            <p>
+                <a href="{{url_for('admin.company_add_post')}}" class="btn btn-primary my-2">Add one more car
+                    company</a>
+                <a href="{{url_for('admin.car_model_add')}}" class="btn btn-primary my-2">Add one more car model</a>
+                <a href="{{url_for('admin.actual_car_post_add')}}" class="btn btn-primary my-2">Add one more actual
+                    car</a>
+                <a href="{{url_for('admin.posts_list')}}" class="btn btn-secondary my-2">See the posts list</a>
+
+                {{macros.centered_modal_button_logout()}}
+
+
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+

@@ -1,0 +1,43 @@
+{% import 'macros.html' as macros %}
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action='' method="post">
+
+    <div class="container">
+        <label for="model_name"><b>Название модели</b></label>
+        <input type="text" placeholder="{{car_for_redact.model_name}}" name="model_name">
+
+        <label for="mother_company_name"><b>Название автоконцерна</b></label>
+        <input type="text" placeholder="{{car_for_redact.mother_company_name}}" name="mother_company_name">
+
+        <label for="general_description"><b>Общее описание</b></label>
+        <input type="text" placeholder="{{car_for_redact.general_description}}" name="general_description">
+
+        <!--        <label for="psw"><b>Описание</b></label>-->
+        <!--        <input type="text" placeholder="Введите описание" name="user" required>-->
+
+        <label for="price "><b>Цена</b></label>
+        <input type="text" placeholder="{{car_for_redact.price}}" name="price">
+
+        <label for="year_made"><b>Год выпуска</b></label>
+        <input type="text" placeholder="{{car_for_redact.year_made}}" name="year_made">
+
+        <label for="engine_volume"><b>Объем двигателя</b></label>
+        <input type="text" placeholder="{{car_for_redact.engine_volume}}" name="engine_volume">
+
+        <label for="engine_horsepower"><b>Количество л.с.</b></label>
+        <input type="text" placeholder="{{car_for_redact.engine_horsepower}}" name="engine_horsepower">
+
+        <label for="travel_reach"><b>Запас хода</b></label>
+        <input type="text" placeholder="{{car_for_redact.travel_reach}}" name="travel_reach">
+
+        <p align="center"><input class="login_button" type="submit" value="Сохранить">
+
+            {{macros.centered_modal_button()}}
+    </div>
+</form>
+
+{% endblock content %}
+

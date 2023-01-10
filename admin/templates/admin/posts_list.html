@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+<!-- Список компаний-производителей -->
+
+{% block call %}
+<a href="company_post_add" class="btn btn-primary my-2">Add one more company</a>
+{% endblock call %}
+
+
+{% block buttons_available scoped %}
+<button onclick="window.location.href = '{{company.company_name}}'" type="button"
+        class="btn btn-sm btn-outline-secondary">View
+</button>
+<button onclick="window.location.href ='{{company.company_name}}/correction'" type="button"
+        class="btn btn-sm btn-outline-secondary">Edit
+</button>
+<button onclick="window.location.href ='{{company.company_name}}/delete'" type="button"
+        class="btn btn-sm btn-outline-secondary">Delete
+</button>
+{% endblock buttons_available %}
+

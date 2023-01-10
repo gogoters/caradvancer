@@ -1,0 +1,15 @@
+{% extends 'user/account.html' %}
+
+{% block content %}
+{% block account_top %}
+<div class="container px-4 py-5" id="hanging-icons">
+    <h2 class="pb-2 border-bottom">Orders history. {{nickname}}</h2>
+    {% endblock account_top %}
+    {% for order in history %}
+    <div>
+        {{order}}
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

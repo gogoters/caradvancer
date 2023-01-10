@@ -1,0 +1,30 @@
+<!--/Страница представляет собой корзину с актуальными заказами пользователя-->
+{% import 'macros.html' as macros %}
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="px-4 py-5 my-5 text-center">
+    <h2 class="pb-2 border-bottom">Urgent cases: {{nickname}}</h2>
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">
+            {% if case %}
+            {{case}}
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <button onclick="window.location.href ='#'" type="button" class="btn btn-primary btn-lg px-4 gap-3">Have a
+                see the car model
+            </button>
+            <button onclick="window.location.href ='{{url_for('.end_rent_actual_car')}}'" type="button"
+                    class="btn btn-outline-secondary btn-lg px-4">
+                End up your rent
+            </button>
+        </div>
+        {% else %}
+        No car rented yet
+        {% endif %}
+        </p>
+
+    </div>
+</div>
+
+{% endblock content %}

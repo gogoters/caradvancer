@@ -1,0 +1,20 @@
+{% import 'macros.html' as macros %}
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action='' method="post">
+
+    <div class="container">
+        <label for="company_name"><b>Название автоконцерна</b></label>
+        <input type="text" placeholder="Название автоконцерна" name="company_name" required>
+
+        <label for="general_company_info"><b>Описание</b></label>
+        <input type="text" placeholder="Введите описание" name="general_company_info" required>
+
+            {{macros.centered_modal_button()}}
+    </div>
+</form>
+
+
+{% endblock content %}
