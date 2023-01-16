@@ -26,7 +26,7 @@ def index():
     if not isLogged():
         return redirect(url_for('.login'))
 
-    return render_template('admin/index.html', title='Админ-панель')
+    return render_template('admin/index.html', title='Admin-panel')
 
 
 @admin.route('/login', methods=["POST", "GET"])
@@ -39,9 +39,9 @@ def login():
             login_admin()
             return redirect(url_for('.index'))
         else:
-            flash ('Неверная пара логин/пароль', category='error')
+            flash ('Wrong login or password', category='error')
 
-    return render_template('admin/login.html', title='Админ-панель')
+    return render_template('admin/login.html', title='Admin-panel')
 
 
 @admin.route('/logout', methods=["POST", "GET"])
@@ -57,7 +57,7 @@ def logout():
 @admin.route('/posts_list')
 def posts_list():
     query = get_all_posts(CarCompany)
-    return render_template('admin/posts_list.html', title='Список статей', company_list=query)
+    return render_template('admin/posts_list.html', title='Posts list', company_list=query)
 
 
 # car-company panel
@@ -72,7 +72,7 @@ def company_add_post():
     if request.method == 'POST':
         res = company_add(request.form['company_name'], request.form['general_company_info'])
 
-    return render_template('admin/company_post_add.html', title='Добавление автоконцерна')
+    return render_template('admin/company_post_add.html', title='Company append')
 
 
 @admin.route('/<car_company>/correction', methods=['POST', 'GET'])
@@ -83,7 +83,7 @@ def company_post_correction(car_company):
                                   lister=[request.form['company_name'], request.form['general_company_info']])
 
     return render_template('admin/company_post_redact.html', company_for_redact=query,
-                           title=f'Редактирование {car_company}')
+                           title=f'Correction {car_company}')
 
 
 @admin.route('/<car_company>/delete', methods=['POST', 'GET'])
@@ -103,7 +103,7 @@ def car_model_add():
                                request.form['travel_reach'], request.form['mother_company_name'],
                                request.form['general_description'])
 
-    return render_template('admin/car_model_add.html', title='Добавление модели автомобиля',
+    return render_template('admin/car_model_add.html', title='Model append',
                            companies=get_all_posts(CarCompany))
 
 

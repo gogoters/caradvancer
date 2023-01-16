@@ -1,10 +1,10 @@
-import random, datetime, time
+import random, datetime
 
 from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker, Session
+from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
-from flask_migrate import Migrate
+#from databases.googlework.googlework_recorders import google_recorder
 
 
 # создаем соединение с БД
@@ -304,5 +304,7 @@ def order_finish(order_id_for_show):
     order_for_finish.order_finished = datetime.datetime.now()
     order_for_finish.order_duration = str(get_order_duration(order_for_finish.order_id_for_show))
     order_for_finish.order_summ = get_order_summ(order_id_for_show)
+    #google_recorder([order_for_finish.id, order_id_for_show.user_rented])
+
 
     s.commit()
