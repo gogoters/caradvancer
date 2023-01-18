@@ -1,11 +1,9 @@
 import random, datetime
-
 from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
-#from databases.googlework.googlework_recorders import google_recorder
-
+from databases.googlework_recorders import CREDENTIALS_FILE, credentials, httpAuth, google_recorder, service
 
 # создаем соединение с БД
 engine = create_engine("sqlite:///databases/blog.db", echo=False, connect_args={'check_same_thread': False})
@@ -304,7 +302,18 @@ def order_finish(order_id_for_show):
     order_for_finish.order_finished = datetime.datetime.now()
     order_for_finish.order_duration = str(get_order_duration(order_for_finish.order_id_for_show))
     order_for_finish.order_summ = get_order_summ(order_id_for_show)
-    #google_recorder([order_for_finish.id, order_id_for_show.user_rented])
 
+    google_recorder(get_one_order_by_user_and_status(order_for_finish.user_rented, status='Finished'),
+                    order_for_finish.id,
+                    (str(order_for_finish).replace(' ', '').split('.')))
 
     s.commit()
+
+
+def testerer(order_id_for_show):
+    order_for_finish = get_one_order_by_id(order_id_for_show)
+    print(str(order_for_finish.user_rented), order_for_finish.id, (str(order_for_finish).replace(' ', '').split('.')))
+    # order_for_finish.id, (str(order_for_finish).split('.')).strip()
+    #print(list(order_for_finish.__dict__.values())[1:])
+    print(type(order_for_finish.id))
+

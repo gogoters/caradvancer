@@ -1,9 +1,3 @@
-from datetime import datetime
+from databases.caDB import testerer
 
-a = datetime.now()
-b = datetime(2015,3,21)
-
-c = a-b
-
-print(c.seconds)
-
+testerer('MX5-1101172023-01-18')
