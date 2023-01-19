@@ -1,3 +1,6 @@
-from databases.caDB import testerer
+from databases import caDB
 
-testerer('MX5-1101172023-01-18')
+res = caDB.get_all_posts('orders')
+
+for i in res:
+    print(i)

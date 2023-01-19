@@ -3,7 +3,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Floa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
-from databases.googlework_recorders import CREDENTIALS_FILE, credentials, httpAuth, google_recorder, service
+from databases.googlesheets_api.googlework_recorders import google_recorder
 
 # создаем соединение с БД
 engine = create_engine("sqlite:///databases/blog.db", echo=False, connect_args={'check_same_thread': False})
@@ -303,17 +303,18 @@ def order_finish(order_id_for_show):
     order_for_finish.order_duration = str(get_order_duration(order_for_finish.order_id_for_show))
     order_for_finish.order_summ = get_order_summ(order_id_for_show)
 
-    google_recorder(get_one_order_by_user_and_status(order_for_finish.user_rented, status='Finished'),
-                    order_for_finish.id,
-                    (str(order_for_finish).replace(' ', '').split('.')))
+    #для окончания заказа перемещаем
+    google_recorder(order_for_finish.id,
+                    [order_for_finish.user_rented,
+                     order_for_finish.order_id_for_show,
+                     order_for_finish.car_rented,
+                     str(order_for_finish.order_started),
+                     str(order_for_finish.order_finished),
+                     str(get_order_duration(order_for_finish.order_id_for_show)),
+                     order_for_finish.order_price,
+                     get_order_summ(order_for_finish.order_id_for_show),
+                     order_for_finish.order_status
+                     ]
+                    )
 
     s.commit()
-
-
-def testerer(order_id_for_show):
-    order_for_finish = get_one_order_by_id(order_id_for_show)
-    print(str(order_for_finish.user_rented), order_for_finish.id, (str(order_for_finish).replace(' ', '').split('.')))
-    # order_for_finish.id, (str(order_for_finish).split('.')).strip()
-    #print(list(order_for_finish.__dict__.values())[1:])
-    print(type(order_for_finish.id))
-
