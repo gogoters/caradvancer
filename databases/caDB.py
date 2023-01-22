@@ -290,7 +290,21 @@ def order_create(user, car_for_rent_serial_number):
                        )
 
     s.add(new_order)
+
     s.commit()
+
+    # для записи в Google-API передаем id(для выбора строки в документе) и передаем список нужных столбцов)
+    google_recorder(new_order.id,
+                    [new_order.user_rented,
+                     new_order.order_id_for_show,
+                     new_order.car_rented,
+                     str(new_order.order_started),
+                     'Not finished yet',
+                     str(get_order_duration(new_order.order_id_for_show)),
+                     new_order.order_price,
+                     'Not finished yet',
+                     new_order.order_status
+                     ])
 
 
 def order_finish(order_id_for_show):
@@ -303,7 +317,7 @@ def order_finish(order_id_for_show):
     order_for_finish.order_duration = str(get_order_duration(order_for_finish.order_id_for_show))
     order_for_finish.order_summ = get_order_summ(order_id_for_show)
 
-    #для окончания заказа перемещаем
+    # для записи в Google-API передаем id(для выбора строки в документе) и передаем список нужных столбцов)
     google_recorder(order_for_finish.id,
                     [order_for_finish.user_rented,
                      order_for_finish.order_id_for_show,
@@ -314,7 +328,6 @@ def order_finish(order_id_for_show):
                      order_for_finish.order_price,
                      get_order_summ(order_for_finish.order_id_for_show),
                      order_for_finish.order_status
-                     ]
-                    )
+                     ])
 
     s.commit()

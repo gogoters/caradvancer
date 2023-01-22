@@ -1,8 +1,13 @@
 import sqlite3
+import requests, json
+import os
+from os.path import join, dirname
 from flask import Blueprint, render_template, url_for, redirect, session, request, flash, get_flashed_messages, g, abort
 from databases.caDB import Users, CarCompany, CarModel, Orders, s, get_all_posts, get_one_user, user_add, user_redact, \
     CarActual, get_one_company, get_one_actual_car, order_create, order_history, order_finish, \
     get_one_order_by_user_and_status
+from dotenv import load_dotenv
+from yookassa import Configuration, Payment
 
 user = Blueprint('user', __name__, template_folder='templates', static_folder='static')
 
@@ -18,6 +23,67 @@ def isLogged():
 
 def logout_user():
     session.clear()
+
+
+# работаем с телеграм-токеном
+def get_from_env(key):
+    dotenv_path = join(dirname(r'C:\Users\User\Desktop\caradvancer'), '.env')
+    load_dotenv(dotenv_path)
+    return os.environ.get(key)  # возвращаем секретный токен
+
+
+def send_message(chat_id, text):
+    method = "sendMessage"
+    token = get_from_env('TELEGRAM_BOT_TOKEN')
+    url = f'https://api.telegram.org/bot{token}/{method}'
+    data = {'chat_id': chat_id, 'text': text}
+    requests.post(url, data=data)
+
+
+# работа с yookassa, создаем платежку
+def create_invoice(chat_id):
+    Configuration.account_id = get_from_env('SHOP_ID')
+    Configuration.secret_key = get_from_env('PAYMENT_TOKEN')
+    payment = Payment.create({
+        "amount": {
+            "value": "100.00",
+            "currency": "RUB"
+        },
+        "confirmation": {
+            "type": "redirect",
+            "return_url": "/account"
+        },
+        "capture": True,
+        "description": "Заказ №1",
+        "metadata": {'chat_id': chat_id}  # любые данные, которые мы хотим получить после оплаты
+    })
+
+    return payment.confirmation.confirmation_url
+
+
+def send_pay_button(chat_id, text):
+    invoice_url = create_invoice(chat_id)
+
+    method = "sendMessage"
+    token = get_from_env("TELEGRAM_BOT_TOKEN")
+    url = f"https://api.telegram.org/bot{token}/{method}"
+
+    data = {"chat_id": chat_id, "text": text, "reply_markup": json.dumps({"inline_keyboard": [[{
+        "text": "Оплатить!",
+        "url": f"{invoice_url}"
+    }]]})}
+
+    requests.post(url, data=data)
+
+
+def check_if_successful_payment(request):
+    try:
+        if request.json['event'] == 'payment.succeeded':
+            return True
+    except KeyError:
+        return False
+
+    return False
 
 
 @user.route('/')
@@ -175,3 +241,17 @@ def actual_model_info(car_company, car_model, serial_number):
 @user.route('/test')  # страница просмотра одной выбранной машины
 def tester(username):
     res = get_one_order_by_user_and_status(username, 'On action')
+
+
+# Работа для отправки форм в телеграм по результатам запроса
+@user.route('/telegram', methods=['POST'])
+def telegram():
+    if check_if_successful_payment(request):
+        # обработка запроса от юкассы
+        chat_id = request.json['object']['metadata']['chat_id']
+        send_message(chat_id, 'Оплата прошла успешно!')
+    else:
+        # обработка запроса от телеграм
+        chat_id = request.json['message']['chat']['id']
+        send_pay_button(chat_id=chat_id, text='Тестовая оплата')
+    return {'ok': True}

@@ -18,7 +18,7 @@ def index():
     return render_template('index.html', title='homepage', company_list=query)
 
 
-@app.route('/<car_company>/')#страница компании со списком моделей
+@app.route('/<car_company>/')  # страница компании со списком моделей
 def car_company(car_company):
     if car_company in [company.company_name for company in get_all_posts(CarCompany)]:
         query = s.query(CarCompany).filter_by(company_name=car_company).first()
@@ -27,7 +27,7 @@ def car_company(car_company):
         abort(404)
 
 
-@app.route('/<car_company>/<car_model>')#страница модели со списком доступных машин определенной модели
+@app.route('/<car_company>/<car_model>')  # страница модели со списком доступных машин определенной модели
 def car_model(car_company, car_model):
     try:
         car_company = s.query(CarCompany).filter_by(company_name=car_company).first()
@@ -39,10 +39,11 @@ def car_model(car_company, car_model):
         abort(404)
 
 
-@app.route('/<car_company>/<car_model>/<actual_model>')  #страница одной выбранной машины
+@app.route('/<car_company>/<car_model>/<actual_model>')  # страница одной выбранной машины
 def actual_model_info(car_company, car_model, actual_model):
     try:
-        query = s.query(CarActual).filter_by(serial_number=actual_model).first()  # выбираем модель машины по адресной строке
+        query = s.query(CarActual).filter_by(
+            serial_number=actual_model).first()  # выбираем модель машины по адресной строке
         car_company = s.query(CarCompany).filter_by(company_name=car_company).first()
         return render_template('actual_model_info.html', title=f'TESTER',
                                car_company=car_company,
@@ -63,4 +64,3 @@ def PageNotFound(error):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
