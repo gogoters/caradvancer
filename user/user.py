@@ -1,13 +1,8 @@
-import sqlite3
-import requests, json
-import os
-from os.path import join, dirname
 from flask import Blueprint, render_template, url_for, redirect, session, request, flash, get_flashed_messages, g, abort
 from databases.caDB import Users, CarCompany, CarModel, Orders, s, get_all_posts, get_one_user, user_add, user_redact, \
     CarActual, get_one_company, get_one_actual_car, order_create, order_history, order_finish, \
-    get_one_order_by_user_and_status
-from dotenv import load_dotenv
-from yookassa import Configuration, Payment
+    get_one_order_by_user_and_status, get_order_summ
+from databases.telegram_api.telegram_work_bot import telegram, yookassa_create_invoice, check_if_successful_payment
 
 user = Blueprint('user', __name__, template_folder='templates', static_folder='static')
 
@@ -23,67 +18,6 @@ def isLogged():
 
 def logout_user():
     session.clear()
-
-
-# работаем с телеграм-токеном
-def get_from_env(key):
-    dotenv_path = join(dirname(r'C:\Users\User\Desktop\caradvancer'), '.env')
-    load_dotenv(dotenv_path)
-    return os.environ.get(key)  # возвращаем секретный токен
-
-
-def send_message(chat_id, text):
-    method = "sendMessage"
-    token = get_from_env('TELEGRAM_BOT_TOKEN')
-    url = f'https://api.telegram.org/bot{token}/{method}'
-    data = {'chat_id': chat_id, 'text': text}
-    requests.post(url, data=data)
-
-
-# работа с yookassa, создаем платежку
-def create_invoice(chat_id):
-    Configuration.account_id = get_from_env('SHOP_ID')
-    Configuration.secret_key = get_from_env('PAYMENT_TOKEN')
-    payment = Payment.create({
-        "amount": {
-            "value": "100.00",
-            "currency": "RUB"
-        },
-        "confirmation": {
-            "type": "redirect",
-            "return_url": "/account"
-        },
-        "capture": True,
-        "description": "Заказ №1",
-        "metadata": {'chat_id': chat_id}  # любые данные, которые мы хотим получить после оплаты
-    })
-
-    return payment.confirmation.confirmation_url
-
-
-def send_pay_button(chat_id, text):
-    invoice_url = create_invoice(chat_id)
-
-    method = "sendMessage"
-    token = get_from_env("TELEGRAM_BOT_TOKEN")
-    url = f"https://api.telegram.org/bot{token}/{method}"
-
-    data = {"chat_id": chat_id, "text": text, "reply_markup": json.dumps({"inline_keyboard": [[{
-        "text": "Оплатить!",
-        "url": f"{invoice_url}"
-    }]]})}
-
-    requests.post(url, data=data)
-
-
-def check_if_successful_payment(request):
-    try:
-        if request.json['event'] == 'payment.succeeded':
-            return True
-    except KeyError:
-        return False
-
-    return False
 
 
 @user.route('/')
@@ -150,7 +84,7 @@ def account():
         {'url': f'{get_one_user(session["user_actual"])}/redact', 'title': 'Account redact', 'description': '',
          'button_text': 'Redact'},
 
-        # {'url': 'test', 'title': 'Тестовая', 'description': '', 'button_text': 'Кнопка'},
+        # {'url': 'payment', 'title': 'Тестовая', 'description': '', 'button_text': 'Кнопка'},
     ]  # словарь с функционалом личного кабинета: ссылка на функцию, заголовок и описание
 
     return render_template('user/account.html', title='Личный кабинет',
@@ -211,19 +145,6 @@ def car_modeler(car_company, car_model):
         abort(404)
 
 
-@user.route('/<car_company>/<car_model>/<serial_number>/rent')  # страница открытия заказа
-def rent_actual_car(car_company, car_model, serial_number):
-    res = order_create(session["user_actual"], serial_number)
-    return redirect(url_for('.account'))
-
-
-@user.route('/unrent')  # страница закрытия заказа
-def end_rent_actual_car():
-    order_for_finish = get_one_order_by_user_and_status(session['user_actual'], 'On action')
-    res = order_finish(order_for_finish.order_id_for_show)
-    return redirect(url_for('.account'))
-
-
 @user.route('/<car_company>/<car_model>/<serial_number>')  # страница просмотра одной выбранной машины
 def actual_model_info(car_company, car_model, serial_number):
     try:
@@ -238,20 +159,28 @@ def actual_model_info(car_company, car_model, serial_number):
         abort(404)
 
 
-@user.route('/test')  # страница просмотра одной выбранной машины
-def tester(username):
-    res = get_one_order_by_user_and_status(username, 'On action')
+@user.route('/<car_company>/<car_model>/<serial_number>/rent')  # страница открытия заказа
+def rent_actual_car(car_company, car_model, serial_number):
+    res = order_create(session["user_actual"], serial_number)
+    return redirect(url_for('.account'))
+
+
+@user.route('/unrent')  # страница закрытия заказа
+def end_rent_actual_car():
+    order_for_finish = get_one_order_by_user_and_status(session['user_actual'], 'On action')
+    url_direction = yookassa_create_invoice(value=get_order_summ(order_for_finish.order_id_for_show)*1000,
+                                            description=order_for_finish.order_id_for_show)  # создаем ссылку на оплату страницы
+    res = order_finish(order_for_finish.order_id_for_show)
+    return redirect(url_direction)
+
 
 
 # Работа для отправки форм в телеграм по результатам запроса
 @user.route('/telegram', methods=['POST'])
-def telegram():
-    if check_if_successful_payment(request):
-        # обработка запроса от юкассы
-        chat_id = request.json['object']['metadata']['chat_id']
-        send_message(chat_id, 'Оплата прошла успешно!')
-    else:
-        # обработка запроса от телеграм
-        chat_id = request.json['message']['chat']['id']
-        send_pay_button(chat_id=chat_id, text='Тестовая оплата')
-    return {'ok': True}
+def process():
+    return telegram()
+
+
+@user.route('/payment/')
+def payment_order(price, name):
+    return render_template('user/payment_form.html', price=price, name=name)
