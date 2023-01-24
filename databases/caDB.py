@@ -21,7 +21,9 @@ class CarCompany(Base):
     id = Column(Integer, primary_key=True)
     company_name = Column(String(50), unique=True)
     general_company_info = Column(String(500), nullable=True)
+    logo_img_path =Column(String, default=None)
     list_autos = relationship('CarModel', backref='car_company', lazy=True)
+
 
 
 class CarModel(Base):
@@ -35,6 +37,7 @@ class CarModel(Base):
     engine_horsepower = Column(Integer)
     travel_reach = Column(Integer)
     mother_company_name = Column(String(50), ForeignKey('car_company.company_name'), default='No category')
+    logo_img_path =Column(String, default=None)
     list_actual = relationship('CarActual', backref='car_model', lazy=True)
     general_description = Column(String(500), default='No info yet')
 
@@ -54,6 +57,7 @@ class CarActual(Base):  # таблица с фактическим количе�
     travel_reach = Column(Integer)
     actual_status = Column(String(500), default='On moderation')
     serial_number = Column(String(50), unique=True)
+    logo_img_path =Column(String, default=None)
 
     mother_model_name = Column(String, ForeignKey('car_model.model_name'))
     list_rented = relationship('Users', backref='car_actual', lazy=True)
@@ -120,8 +124,8 @@ def get_one_company(company_name=None):
     return query
 
 
-def company_add(company_name, general_company_info):
-    new_company = CarCompany(company_name=company_name, general_company_info=general_company_info)
+def company_add(company_name, general_company_info, logo_img_path):
+    new_company = CarCompany(company_name=company_name, general_company_info=general_company_info, logo_img_path=logo_img_path)
     s.add(new_company)
     s.commit()
 
@@ -130,6 +134,7 @@ def company_redact_post(company_name, lister):
     company_for_redact = get_one_company(company_name)
     if lister[0]: company_for_redact.company_name = lister[0]
     if lister[1]: company_for_redact.general_company_info = lister[1]
+    if lister[2]: company_for_redact.logo_img_path = lister[2]
 
     s.commit()
 
@@ -149,10 +154,11 @@ def get_one_car(model_name=None):
 
 
 def car_add_post(model_name, price, year_made, engine_volume, engine_horsepower, travel_reach, mother_company_name,
-                 general_description):
+                 general_description, logo_img_path):
     new_car = CarModel(model_name=model_name, price=price, year_made=year_made, engine_volume=engine_volume,
                        engine_horsepower=engine_horsepower, travel_reach=travel_reach,
-                       mother_company_name=mother_company_name, general_description=general_description)
+                       mother_company_name=mother_company_name, general_description=general_description,
+                       logo_img_path=logo_img_path)
     s.add(new_car)
     s.commit()
 
@@ -167,6 +173,7 @@ def car_redact_post(model_name, lister):
     if lister[5]: car_for_redact.travel_reach = lister[5]
     if lister[6]: car_for_redact.mother_company_name = lister[6]
     if lister[7]: car_for_redact.general_description = lister[7]
+    if lister[8]: car_for_redact.logo_img_path = lister[8]
 
     s.commit()
 
@@ -195,15 +202,16 @@ def actual_redact_post(actual_model, lister):
     if lister[5]: car_for_redact.engine_horsepower = lister[5]
     if lister[6]: car_for_redact.travel_reach = lister[6]
     if lister[7]: car_for_redact.serial_number = lister[7]
+    if lister[8]: car_for_redact.logo_img_path = lister[8]
 
     s.commit()
 
 
 def actual_car_add_post(model_name, price, year_made, engine_volume, engine_horsepower, travel_reach, mother_model_name,
-                        serial_number):
+                        serial_number, logo_img_path):
     new_car = CarActual(model_name=model_name, price=price, year_made=year_made, engine_volume=engine_volume,
                         engine_horsepower=engine_horsepower, travel_reach=travel_reach,
-                        mother_model_name=mother_model_name, serial_number=serial_number)
+                        mother_model_name=mother_model_name, serial_number=serial_number, logo_img_path=logo_img_path)
     s.add(new_car)
     s.commit()
 

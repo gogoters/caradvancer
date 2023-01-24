@@ -33,12 +33,14 @@
                 {%for car in car_model.list_actual%}
                 <div class="col">
                     <div class="card shadow-sm">
-                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="10"
                              xmlns="http://www.w3.org/2000/svg" role="img"
                              aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                            <img align="center" class="image-responsive" src="/{{car.logo_img_path}}"
+                                 alt="{{car.company_name}}">
                             <title>Placeholder</title>
                             <rect width="100%" height="100%" fill="#55595c"/>
-                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{car.model_name}} {{car.serial_number}}
+<!--                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{car.model_name}} {{car.serial_number}}-->
                             </text>
                         </svg>
                         <div class="card-body">
@@ -50,9 +52,9 @@
                                             type="button" class="btn btn-sm btn-outline-secondary">View
                                     </button>
                                     <!--                                    Кнопка статсуа автомобиля-->
-<!--                                    <button onclick="window.location.href = '#'"-->
-<!--                                            type="button" class="btn btn-sm btn-outline-secondary">{{car.actual_status}}-->
-<!--                                    </button>-->
+                                    <!--                                    <button onclick="window.location.href = '#'"-->
+                                    <!--                                            type="button" class="btn btn-sm btn-outline-secondary">{{car.actual_status}}-->
+                                    <!--                                    </button>-->
                                     {% endblock buttons_available %}
                                 </div>
                                 <small class="text-muted"> {{car.price}}€/hour </small>

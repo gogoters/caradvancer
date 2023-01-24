@@ -6,7 +6,7 @@ from databases.caDB import CarModel, CarCompany, CarActual, s, get_all_posts, ge
     get_one_actual_car, actual_redact_post, actual_car_delete_post, actual_car_add_post, actual_car_status
 from databases.validators.validators import equalazer_register
 
-admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
+admin = Blueprint('admin', __name__, template_folder='templates', static_folder=r'C:\Users\User\Desktop\caradvancer\static')
 
 
 def isLogged():
@@ -70,7 +70,7 @@ def car_company(car_company):
 @admin.route('/company_post_add', methods=['POST', 'GET'])
 def company_add_post():
     if request.method == 'POST':
-        res = company_add(request.form['company_name'], request.form['general_company_info'])
+        res = company_add(request.form['company_name'], request.form['general_company_info'], request.form['logo_img_path'])
 
     return render_template('admin/company_post_add.html', title='Company append')
 
@@ -80,7 +80,7 @@ def company_post_correction(car_company):
     query = get_one_company(car_company)
     if request.method == 'POST':
         res = company_redact_post(car_company,
-                                  lister=[request.form['company_name'], request.form['general_company_info']])
+                                  lister=[request.form['company_name'], request.form['general_company_info'], request.form['logo_img_path']])
 
     return render_template('admin/company_post_redact.html', company_for_redact=query,
                            title=f'Correction {car_company}')
@@ -98,10 +98,12 @@ def company_post_delete(car_company):
 def car_model_add():
     if request.method == 'POST':
         if get_one_car(request.form['model_name']) not in get_all_car_names(CarModel):
+            # проверяем, нет ли подобной модели в списке CarModel
             res = car_add_post(request.form['model_name'], request.form['price'], request.form['year_made'],
                                request.form['engine_volume'], request.form['engine_horsepower'],
                                request.form['travel_reach'], request.form['mother_company_name'],
-                               request.form['general_description'])
+                               request.form['general_description'],
+                               request.form['logo_img_path'])
 
     return render_template('admin/car_model_add.html', title='Model append',
                            companies=get_all_posts(CarCompany))
@@ -127,7 +129,8 @@ def car_post_correction(car_company, car_model):
                               lister=[request.form['model_name'], request.form['price'], request.form['year_made'],
                                       request.form['engine_volume'], request.form['engine_horsepower'],
                                       request.form['travel_reach'], request.form['mother_company_name'],
-                                      request.form['general_description']])
+                                      request.form['general_description'],
+                                      request.form['logo_img_path']])
 
     return render_template('admin/car_post_redact.html', car_for_redact=query,
                            title=f'Редактирование статьи {car_model}')
@@ -160,7 +163,8 @@ def actual_car_post_add():
         res = actual_car_add_post(request.form['model_name'], request.form['price'], request.form['year_made'],
                                   request.form['engine_volume'], request.form['engine_horsepower'],
                                   request.form['travel_reach'], request.form['mother_model_name'],
-                                  request.form['serial_number'])
+                                  request.form['serial_number'],
+                                  request.form['logo_img_path'])
 
     return render_template('admin/actual_model_add.html', title='Добавление автомобиля из наличия',
                            companies=get_all_posts(CarCompany))
@@ -176,6 +180,7 @@ def actual_model_correction(car_company, car_model, serial_number):
                                          request.form['price'], request.form['year_made'],
                                          request.form['engine_volume'], request.form['engine_horsepower'],
                                          request.form['travel_reach'], request.form['serial_number'],
+                                         request.form['logo_img_path']
                                          ])
 
     return render_template('admin/actual_model_redact.html', car_for_redact=query,

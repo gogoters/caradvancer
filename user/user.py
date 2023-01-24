@@ -4,7 +4,7 @@ from databases.caDB import Users, CarCompany, CarModel, Orders, s, get_all_posts
     get_one_order_by_user_and_status, get_order_summ
 from databases.telegram_api.telegram_work_bot import telegram, yookassa_create_invoice, check_if_successful_payment
 
-user = Blueprint('user', __name__, template_folder='templates', static_folder='static')
+user = Blueprint('user', __name__, template_folder='templates', static_folder=r'C:\Users\User\Desktop\caradvancer\static')
 
 
 def login_user(candidate):  # берем candidate из формы user/login.html и дальше используем никнейм из сессии
@@ -170,6 +170,7 @@ def end_rent_actual_car():
     order_for_finish = get_one_order_by_user_and_status(session['user_actual'], 'On action')
     url_direction = yookassa_create_invoice(value=get_order_summ(order_for_finish.order_id_for_show)*1000,
                                             description=order_for_finish.order_id_for_show)  # создаем ссылку на оплату страницы
+    #print(request.json)
     res = order_finish(order_for_finish.order_id_for_show)
     return redirect(url_direction)
 
