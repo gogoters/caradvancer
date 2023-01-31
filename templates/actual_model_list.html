@@ -43,7 +43,7 @@
 <!--                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{car.model_name}} {{car.serial_number}}-->
                             </text>
                         </svg>
-                        <div class="card-body">
+                        <div class="card-body" align="justify">
                             <p class="card-text">{{car}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
@@ -51,10 +51,6 @@
                                     <button onclick="window.location.href = '/{{car_company.company_name}}/{{car.mother_model_name}}/{{car.serial_number}}'"
                                             type="button" class="btn btn-sm btn-outline-secondary">View
                                     </button>
-                                    <!--                                    Кнопка статсуа автомобиля-->
-                                    <!--                                    <button onclick="window.location.href = '#'"-->
-                                    <!--                                            type="button" class="btn btn-sm btn-outline-secondary">{{car.actual_status}}-->
-                                    <!--                                    </button>-->
                                     {% endblock buttons_available %}
                                 </div>
                                 <small class="text-muted"> {{car.price}}€/hour </small>

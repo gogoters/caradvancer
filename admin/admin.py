@@ -6,7 +6,8 @@ from databases.caDB import CarModel, CarCompany, CarActual, s, get_all_posts, ge
     get_one_actual_car, actual_redact_post, actual_car_delete_post, actual_car_add_post, actual_car_status
 from databases.validators.validators import equalazer_register
 
-admin = Blueprint('admin', __name__, template_folder='templates', static_folder=r'C:\Users\User\Desktop\caradvancer\static')
+admin = Blueprint('admin', __name__, template_folder='templates',
+                  static_folder=r'C:\Users\User\Desktop\caradvancer\static')
 
 
 def isLogged():
@@ -35,11 +36,11 @@ def login():
         return redirect(url_for('.index'))
 
     if request.method == "POST":
-        if request.form['user'] == "admin" and equalazer_register(request.form['psw'],"12345"):
+        if request.form['user'] == "admin" and equalazer_register(request.form['psw'], "12345"):
             login_admin()
             return redirect(url_for('.index'))
         else:
-            flash ('Wrong login or password', category='error')
+            flash('Wrong login or password', category='error')
 
     return render_template('admin/login.html', title='Admin-panel')
 
@@ -70,7 +71,8 @@ def car_company(car_company):
 @admin.route('/company_post_add', methods=['POST', 'GET'])
 def company_add_post():
     if request.method == 'POST':
-        res = company_add(request.form['company_name'], request.form['general_company_info'], request.form['logo_img_path'])
+        res = company_add(request.form['company_name'], request.form['general_company_info'],
+                          request.form['logo_img_path'])
 
     return render_template('admin/company_post_add.html', title='Company append')
 
@@ -80,7 +82,8 @@ def company_post_correction(car_company):
     query = get_one_company(car_company)
     if request.method == 'POST':
         res = company_redact_post(car_company,
-                                  lister=[request.form['company_name'], request.form['general_company_info'], request.form['logo_img_path']])
+                                  lister=[request.form['company_name'], request.form['general_company_info'],
+                                          request.form['logo_img_path']])
 
     return render_template('admin/company_post_redact.html', company_for_redact=query,
                            title=f'Correction {car_company}')
@@ -101,9 +104,9 @@ def car_model_add():
             # проверяем, нет ли подобной модели в списке CarModel
             res = car_add_post(request.form['model_name'], request.form['price'], request.form['year_made'],
                                request.form['engine_volume'], request.form['engine_horsepower'],
-                               request.form['travel_reach'], request.form['mother_company_name'],
+                               request.form['travel_reach'],
                                request.form['general_description'],
-                               request.form['logo_img_path'])
+                               request.form['logo_img_path'], request.form['mother_company_name'])
 
     return render_template('admin/car_model_add.html', title='Model append',
                            companies=get_all_posts(CarCompany))
@@ -162,9 +165,9 @@ def actual_car_post_add():
     if request.method == 'POST':
         res = actual_car_add_post(request.form['model_name'], request.form['price'], request.form['year_made'],
                                   request.form['engine_volume'], request.form['engine_horsepower'],
-                                  request.form['travel_reach'], request.form['mother_model_name'],
+                                  request.form['travel_reach'],
                                   request.form['serial_number'],
-                                  request.form['logo_img_path'])
+                                  request.form['logo_img_path'],  request.form['mother_model_name'])
 
     return render_template('admin/actual_model_add.html', title='Добавление автомобиля из наличия',
                            companies=get_all_posts(CarCompany))

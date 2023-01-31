@@ -4,7 +4,6 @@ import httplib2
 from apiclient import discovery
 from oauth2client.service_account import ServiceAccountCredentials
 
-
 # Файл, полученный в Google Developer Console.
 # Обязательно укажи полный путь к файлу, чтобы не было проблем с импортом
 CREDENTIALS_FILE = r'C:\Users\User\Desktop\caradvancer\databases\googlesheets_api\creds.json'

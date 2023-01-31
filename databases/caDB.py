@@ -13,6 +13,7 @@ Base = declarative_base()  # стандартный класс, его насл�
 actual_car_status = ['Active', 'Inactive', 'On moderation', 'Check required',
                      'Repairing',
                      'On action']  # статусы для автомобилей (возможно распространение на компании и модели)
+default_car_picture = 'static/icons/no_category.png'  # ставим путь к картинке по умолчанию
 
 
 class CarCompany(Base):
@@ -21,9 +22,8 @@ class CarCompany(Base):
     id = Column(Integer, primary_key=True)
     company_name = Column(String(50), unique=True)
     general_company_info = Column(String(500), nullable=True)
-    logo_img_path =Column(String, default=None)
+    logo_img_path = Column(String, default=None)
     list_autos = relationship('CarModel', backref='car_company', lazy=True)
-
 
 
 class CarModel(Base):
@@ -37,7 +37,7 @@ class CarModel(Base):
     engine_horsepower = Column(Integer)
     travel_reach = Column(Integer)
     mother_company_name = Column(String(50), ForeignKey('car_company.company_name'), default='No category')
-    logo_img_path =Column(String, default=None)
+    logo_img_path = Column(String, default=None)
     list_actual = relationship('CarActual', backref='car_model', lazy=True)
     general_description = Column(String(500), default='No info yet')
 
@@ -57,7 +57,7 @@ class CarActual(Base):  # таблица с фактическим количе�
     travel_reach = Column(Integer)
     actual_status = Column(String(500), default='On moderation')
     serial_number = Column(String(50), unique=True)
-    logo_img_path =Column(String, default=None)
+    logo_img_path = Column(String, default=None)
 
     mother_model_name = Column(String, ForeignKey('car_model.model_name'))
     list_rented = relationship('Users', backref='car_actual', lazy=True)
@@ -125,14 +125,19 @@ def get_one_company(company_name=None):
 
 
 def company_add(company_name, general_company_info, logo_img_path):
-    new_company = CarCompany(company_name=company_name, general_company_info=general_company_info, logo_img_path=logo_img_path)
+    new_company = CarCompany(company_name=company_name, general_company_info=general_company_info,
+                             logo_img_path=logo_img_path if logo_img_path else default_car_picture)
     s.add(new_company)
     s.commit()
 
 
 def company_redact_post(company_name, lister):
     company_for_redact = get_one_company(company_name)
-    if lister[0]: company_for_redact.company_name = lister[0]
+    if lister[0]:
+        #при смене названия компании нужно реализовать смену названий всех моделей авто
+        for model in company_for_redact.list_autos:
+            model.mother_company_name = lister[0]
+        company_for_redact.company_name = lister[0]
     if lister[1]: company_for_redact.general_company_info = lister[1]
     if lister[2]: company_for_redact.logo_img_path = lister[2]
 
@@ -153,19 +158,25 @@ def get_one_car(model_name=None):
     return query
 
 
-def car_add_post(model_name, price, year_made, engine_volume, engine_horsepower, travel_reach, mother_company_name,
-                 general_description, logo_img_path):
+def car_add_post(model_name, price, year_made, engine_volume, engine_horsepower, travel_reach,
+                 general_description, logo_img_path, mother_company_name):
     new_car = CarModel(model_name=model_name, price=price, year_made=year_made, engine_volume=engine_volume,
                        engine_horsepower=engine_horsepower, travel_reach=travel_reach,
-                       mother_company_name=mother_company_name, general_description=general_description,
-                       logo_img_path=logo_img_path)
+                       general_description=general_description,
+                       logo_img_path=logo_img_path if logo_img_path else default_car_picture,
+                       mother_company_name=mother_company_name if mother_company_name else 'No category')
     s.add(new_car)
     s.commit()
 
 
 def car_redact_post(model_name, lister):
     car_for_redact = get_one_car(model_name)
-    if lister[0]: car_for_redact.model_name = lister[0]
+    if lister[0]:
+        # при смене названия vjltkb нужно реализовать смену названий всех актуальных авто
+        for car in car_for_redact.list_actual:
+            car.mother_model_name = lister[0]
+            car.model_name = lister[0]
+        car_for_redact.model_name = lister[0]
     if lister[1]: car_for_redact.price = lister[1]
     if lister[2]: car_for_redact.year_made = lister[2]
     if lister[3]: car_for_redact.engine_volume = lister[3]
@@ -211,7 +222,8 @@ def actual_car_add_post(model_name, price, year_made, engine_volume, engine_hors
                         serial_number, logo_img_path):
     new_car = CarActual(model_name=model_name, price=price, year_made=year_made, engine_volume=engine_volume,
                         engine_horsepower=engine_horsepower, travel_reach=travel_reach,
-                        mother_model_name=mother_model_name, serial_number=serial_number, logo_img_path=logo_img_path)
+                        serial_number=serial_number, logo_img_path=logo_img_path if logo_img_path else default_car_picture,
+                        mother_model_name=(mother_model_name if mother_model_name else 'No name model'))
     s.add(new_car)
     s.commit()
 
