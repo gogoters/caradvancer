@@ -6,11 +6,21 @@
 </button>
 
 
+<!--Делаем условие, чтобы пользователь не видел ВСЕ машины, а только ту, которую можно снять-->
+{% if car.actual_status == 'Active' %}
 <button type="button"
         class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
         data-bs-target="#logout">
     Rent
 </button>
+{% else %}
+<button type="button"
+        class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+        data-bs-target="#">
+    N/A now
+</button>
+{% endif %}
+
 
 <div class="modal fade" id="logout" tabindex="-1" aria-labelledby="exampleModalLabel"
      aria-hidden="true">

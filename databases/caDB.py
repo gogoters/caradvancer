@@ -5,6 +5,11 @@ from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
 from databases.googlesheets_api.googlework_recorders import google_recorder
 
+'''
+В этом разделе собраны методы работы с базами данных.
+БД реализованы через sqalchemy. Сами таблицы реализованы через классы. Классы соединены с собой методом backref.
+'''
+
 # создаем соединение с БД
 engine = create_engine("sqlite:///databases/blog.db", echo=False, connect_args={'check_same_thread': False})
 
@@ -16,7 +21,7 @@ actual_car_status = ['Active', 'Inactive', 'On moderation', 'Check required',
 default_car_picture = 'static/icons/no_category.png'  # ставим путь к картинке по умолчанию
 
 
-class CarCompany(Base):
+class CarCompany(Base):  # таблица с моделью той или иной компании
     __tablename__ = 'car_company'
 
     id = Column(Integer, primary_key=True)
@@ -26,7 +31,7 @@ class CarCompany(Base):
     list_autos = relationship('CarModel', backref='car_company', lazy=True)
 
 
-class CarModel(Base):
+class CarModel(Base):  # таблица с моделью той или иной машины
     __tablename__ = 'car_model'
 
     id = Column(Integer, primary_key=True)
@@ -55,19 +60,19 @@ class CarActual(Base):  # таблица с фактическим количе�
     engine_volume = Column(Integer)
     engine_horsepower = Column(Integer)
     travel_reach = Column(Integer)
-    actual_status = Column(String(500), default='On moderation')
+    actual_status = Column(String(500), default='Active')
     serial_number = Column(String(50), unique=True)
     logo_img_path = Column(String, default=None)
 
-    mother_model_name = Column(String, ForeignKey('car_model.model_name'))
+    mother_model_name = Column(String, ForeignKey('car_model.model_name'), default='No category')
     list_rented = relationship('Users', backref='car_actual', lazy=True)
     list_orders = relationship('Orders', backref='car_actual', lazy=True)
 
     def __str__(self):
-        return f'''Модель {self.model_name} за номером {self.serial_number}. Год выпуска {self.year_made}, объем двигателя {self.engine_volume}.'''
+        return f'''"{self.model_name}" {self.serial_number} S/N. {self.year_made} year made, {self.engine_volume} L. engine volume.'''
 
 
-class Users(Base):
+class Users(Base):  # таблица с пользователями
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
@@ -81,7 +86,7 @@ class Users(Base):
         return self.nickname
 
 
-class Orders(Base):
+class Orders(Base):  # таблица с заказами
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True)
     order_id_for_show = Column(String, unique=True)
@@ -104,6 +109,7 @@ class Orders(Base):
 
 Base.metadata.create_all(engine)
 
+# работа с сесмиями для создания запросов
 session = sessionmaker(bind=engine)
 s = session()
 
@@ -134,7 +140,7 @@ def company_add(company_name, general_company_info, logo_img_path):
 def company_redact_post(company_name, lister):
     company_for_redact = get_one_company(company_name)
     if lister[0]:
-        #при смене названия компании нужно реализовать смену названий всех моделей авто
+        # меняем названия всех моделей вслед за "материнским" заводом
         for model in company_for_redact.list_autos:
             model.mother_company_name = lister[0]
         company_for_redact.company_name = lister[0]
@@ -172,7 +178,7 @@ def car_add_post(model_name, price, year_made, engine_volume, engine_horsepower,
 def car_redact_post(model_name, lister):
     car_for_redact = get_one_car(model_name)
     if lister[0]:
-        # при смене названия vjltkb нужно реализовать смену названий всех актуальных авто
+        # меняем названия всех актуальных моделей вслед за "материнской" моделью
         for car in car_for_redact.list_actual:
             car.mother_model_name = lister[0]
             car.model_name = lister[0]
@@ -214,6 +220,7 @@ def actual_redact_post(actual_model, lister):
     if lister[6]: car_for_redact.travel_reach = lister[6]
     if lister[7]: car_for_redact.serial_number = lister[7]
     if lister[8]: car_for_redact.logo_img_path = lister[8]
+    if lister[9]: car_for_redact.actual_status = lister[9]
 
     s.commit()
 
@@ -222,7 +229,8 @@ def actual_car_add_post(model_name, price, year_made, engine_volume, engine_hors
                         serial_number, logo_img_path):
     new_car = CarActual(model_name=model_name, price=price, year_made=year_made, engine_volume=engine_volume,
                         engine_horsepower=engine_horsepower, travel_reach=travel_reach,
-                        serial_number=serial_number, logo_img_path=logo_img_path if logo_img_path else default_car_picture,
+                        serial_number=serial_number,
+                        logo_img_path=logo_img_path if logo_img_path else default_car_picture,
                         mother_model_name=(mother_model_name if mother_model_name else 'No name model'))
     s.add(new_car)
     s.commit()
@@ -254,10 +262,9 @@ def get_one_user(nickname):
     return query
 
 
-def user_redact(nickname, lister):
+def user_redact(nickname, password):
     user_for_redact = get_one_user(nickname)
-    if lister[0]: user_for_redact.nickname = lister[0]
-    if lister[1]: user_for_redact.password = lister[1]
+    user_for_redact.password = password
 
     s.commit()
 
@@ -329,7 +336,7 @@ def order_create(user, car_for_rent_serial_number):
 
 def order_finish(order_id_for_show):
     order_for_finish = get_one_order_by_id(order_id_for_show)
-    actual_car_set_status(order_for_finish.car_rented, 'Check required')  # сдаем машину с проката
+    actual_car_set_status(order_for_finish.car_rented, 'Active')  # сдаем машину с проката
     get_one_user(order_for_finish.user_rented).user_car = None
     order_for_finish.order_status = 'Finished'
 

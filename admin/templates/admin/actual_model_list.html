@@ -8,7 +8,7 @@
 
 {% block buttons_available scoped %}
 <button onclick="window.location.href ='{{car.mother_model_name}}/{{car.serial_number}}'" type="button"
-        class="btn btn-sm btn-outline-secondary">View
+        class="btn btn-sm btn-outline-secondary ">View
 </button>
 <button onclick="window.location.href ='{{car.mother_model_name}}/{{car.serial_number}}/correction'" type="button"
         class="btn btn-sm btn-outline-secondary">Edit
@@ -16,16 +16,15 @@
 <button onclick="window.location.href ='{{car.mother_model_name}}/{{car.serial_number}}/delete'" type="button"
         class="btn btn-sm btn-outline-secondary">Delete
 </button>
-
-<!--Кнопка для переключения статуса через админ-панель-->
-<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-        data-bs-toggle="dropdown" aria-expanded="false">{{car.actual_status}}
+<button type="button" class="btn btn-sm btn-outline-secondary"
+        data-bs-toggle="" aria-expanded="false">{{car.actual_status}}
 </button>
-<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    {% for item in actual_car_status %}
-    <li><a class="dropdown-item" href="#">{{item}}</a></li>
-    {% endfor %}
-</ul>
+
+<!--<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">-->
+<!--    {% for item in actual_car_status %}-->
+<!--    <li><a class="dropdown-item" onclick="#" href="#">{{item}}</a></li>-->
+<!--    {% endfor %}-->
+<!--</ul>-->
 
 <small class="text-muted">
     {% for user in car.list_rented %}

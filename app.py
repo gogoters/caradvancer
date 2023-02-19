@@ -6,11 +6,11 @@ from user.user import user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'caradvancer'
-app.register_blueprint(admin, url_prefix='/admin')
-app.register_blueprint(user, url_prefix='/user')
+app.register_blueprint(admin, url_prefix='/admin')  # регистрируем функционал админа в директории admin
+app.register_blueprint(user, url_prefix='/user')  # регистрируем функционал юзера в директории user
 
 
-@app.route('/')
+@app.route('/')  # гостевая страница
 @app.route('/index')
 @app.route('/home')
 def index():
@@ -57,7 +57,7 @@ def contact():
     return render_template('contact.html', title='contacts')
 
 
-@app.errorhandler(404)
+@app.errorhandler(404)  # обработчик ошибки 404
 def PageNotFound(error):
     return render_template('page404handler.html', title='pagenotfound')
 

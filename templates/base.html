@@ -41,6 +41,8 @@
         }
       }
 
+
+
     </style>
     {% endblock styler %}
 
@@ -59,8 +61,10 @@
                 <strong>.caradvancer</strong>
             </a>
             {% endblock top_returner %}
+
+            {%block dropdown%}
             <div class="dropdown">
-                {%block dropdown%}
+
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
                         data-bs-toggle="dropdown" aria-expanded="false">
                     Menu
@@ -68,10 +72,12 @@
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <li><a class="dropdown-item" href="{{url_for('user.account')}}">User</a></li>
                     <li><a class="dropdown-item" href="{{url_for('admin.login')}}">Admin-panel</a></li>
-
                 </ul>
-                {%endblock dropdown%}
+
             </div>
+            {%endblock dropdown%}
+
+
         </div>
     </div>
 </header>

@@ -2,22 +2,26 @@
 <!--Страница дает модель выбранного автомобиля-->
 
 {% block content %}
-        <div class="col">
-          <div class="card shadow-sm">
-            <svg class="bd-placeholder-img card-img-top" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img"
-                 aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-<!--                <img align="center" class="image-responsive" src="/{{actual_model.logo_img_path}}"-->
-<!--                                 alt="{{actual_model.company_name}}">-->
-                <title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">{{actual_model.model_name}}</text></svg>
-            <div class="card-body">
-              <p class="card-text">{{actual_model.mother_model_name}} {{actual_model.model_name}}:</p>
-                <p class="card-text">{{actual_model}}</p>
-              <div class="d-flex justify-content-between align-items-center">
+<div class="col">
+    <div class="card shadow-sm">
+        <svg class="bd-placeholder-img card-img-top" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"
+             role="img"
+             aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <!--                <img align="center" class="image-responsive" src="/{{actual_model.logo_img_path}}"-->
+            <!--                                 alt="{{actual_model.company_name}}">-->
+            <title>Placeholder</title>
+            <rect width="100%" height="100%" fill="#55595c"/>
+            <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{actual_model.model_name}}</text>
+        </svg>
+        <div class="card-body">
+            <p class="card-text">{{car_company.company_name}} {{actual_model.model_name}}:</p>
+            <p class="card-text">{{actual_model}}</p>
+            <div class="d-flex justify-content-between align-items-center">
                 <small class="text-muted"> {{actual_model.price}} €/hour </small>
-              </div>
             </div>
-          </div>
         </div>
+    </div>
+</div>
 {% endblock content %}
 
 

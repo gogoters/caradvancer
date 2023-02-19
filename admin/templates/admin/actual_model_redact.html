@@ -1,39 +1,41 @@
+<!--Можно реализовать через наследование actual_model_add, но хочется сохранить плейсхолдеры-->
 {% import 'macros.html' as macros %}
 {% extends 'base.html' %}
 
 {% block content %}
 
-{{car_for_redact}}
-
 <form action='' method="post">
 
     <div class="container">
-        <label for="model_name"><b>Название модели</b></label>
+        <label for="model_name"><b>Actual model name</b></label>
         <input type="text" placeholder="{{car_for_redact.model_name}}" name="model_name">
 
-        <label for="mother_model_name"><b>Название материнской модели</b></label>
+        <label for="mother_model_name"><b>Mother model name</b></label>
         <input type="text" placeholder="{{car_for_redact.mother_model_name}}" name="mother_model_name">
 
-        <label for="serial_number"><b>Серийный номер</b></label>
+        <label for="serial_number"><b>Serial number</b></label>
         <input type="text" placeholder="{{car_for_redact.serial_number}}" name="serial_number">
 
-        <label for="price "><b>Цена</b></label>
+        <label for="price "><b>Price per hour</b></label>
         <input type="text" placeholder="{{car_for_redact.price}}" name="price">
 
-        <label for="year_made"><b>Год выпуска</b></label>
+        <label for="year_made"><b>Year made</b></label>
         <input type="text" placeholder="{{car_for_redact.year_made}}" name="year_made">
 
-        <label for="engine_volume"><b>Объем двигателя</b></label>
+        <label for="engine_volume"><b>Engine volume</b></label>
         <input type="text" placeholder="{{car_for_redact.engine_volume}}" name="engine_volume">
 
-        <label for="engine_horsepower"><b>Количество л.с.</b></label>
+        <label for="engine_horsepower"><b>Hoursepower count</b></label>
         <input type="text" placeholder="{{car_for_redact.engine_horsepower}}" name="engine_horsepower">
 
-        <label for="travel_reach"><b>Запас хода</b></label>
+        <label for="travel_reach"><b>Travel reach</b></label>
         <input type="text" placeholder="{{car_for_redact.travel_reach}}" name="travel_reach">
 
         <label for="img"><b>Car photo</b></label>
         <input type="text" placeholder="Car photo" name="logo_img_path">
+
+        <label for="actual_status"><b>Actual status</b></label>
+        <input type="text" placeholder="{{car_for_redact.actual_status}}" name="actual_status">
 
         {{macros.centered_modal_button()}}
     </div>

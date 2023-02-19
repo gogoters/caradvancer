@@ -13,24 +13,18 @@
 
 
     <div class="container">
+        {% block username %}
         <label for="user"><b>Username</b></label>
         <input type="text" placeholder="Enter {{user_placeholder}}" name="user" required>
+        {% endblock username %}
 
         {% block password %}
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Enter {{psw_placeholder}}" name="psw" required>
         {% endblock password %}
 
-        {% block remember %}
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" value="remember-me"> Запомнить меня
-            </label>
-        </div>
-        {% endblock remember %}
-
         {% block initiatial_button %}
-        <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
         {% endblock initiatial_button %}
 
     </div>
